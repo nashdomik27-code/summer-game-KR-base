@@ -6,6 +6,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
+import com.pedropathing.paths.PathPoint;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -56,9 +57,9 @@ public class Drive extends SubsystemBase {
         return drive.getPose();
     }
 
-//    public Pose getDesiredPose() {
-//        return drive.getClosestPose();
-//    }
+    public PathPoint getDesiredPose() {
+        return drive.getClosestPose();
+    }
 
     public double getPathT() {
         return drive.getCurrentTValue();

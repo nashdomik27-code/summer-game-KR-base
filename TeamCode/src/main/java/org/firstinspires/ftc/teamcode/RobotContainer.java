@@ -4,20 +4,25 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.auto.BlueAuto;
 import org.firstinspires.ftc.teamcode.lib.wpilib.CommandGamepad;
 import org.firstinspires.ftc.teamcode.opmodes.OpModeConstants;
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConstants;
 
 public class RobotContainer {
     private final Drive drive;
+    private final Shooter shooter;
 
     private final CommandGamepad driverController;
 
     public RobotContainer(HardwareMap hwMap, Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2, OpModeConstants autoNum) {
         drive = new Drive(hwMap, telemetry);
+        shooter = new Shooter(hwMap, telemetry);
 
         driverController = new CommandGamepad(gamepad1);
 
@@ -40,10 +45,20 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
+
+        // configure your command bindings to your controller like this
+
+        driverController.a().onTrue(
+                Commands.sequence(
+                        Shooter.setVelocity(shooter, () -> ShooterConstants.longShot).withTimeout(0)
+                )
+        );
     }
 
     public Command getAutoCommand(OpModeConstants auto) {
         return switch (auto) {
+            case BLUE_AUTO -> BlueAuto.getBlueAutoCommand(shooter);
+            // case RED_AUTO -> RedAuto.getRedAutoCommand(shooter);
             default -> Commands.none();
         };
     }

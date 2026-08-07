@@ -18,13 +18,13 @@ public class drivetrain {
 
     public drivetrain(HardwareMap hardwareMap) {
 
-        frontLeft  = hardwareMap.get(DcMotorEx.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
-        backLeft   = hardwareMap.get(DcMotorEx.class, "backLeft");
-        backRight  = hardwareMap.get(DcMotorEx.class, "backRight");
+        frontLeft  = hardwareMap.get(DcMotorEx.class, "cm0");
+        frontRight = hardwareMap.get(DcMotorEx.class, "cm1");
+        backLeft   = hardwareMap.get(DcMotorEx.class, "cm2");
+        backRight  = hardwareMap.get(DcMotorEx.class, "cm3");
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);  
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 

@@ -7,24 +7,31 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.commands.auto.BlueAuto;
 import org.firstinspires.ftc.teamcode.lib.wpilib.CommandGamepad;
 import org.firstinspires.ftc.teamcode.opmodes.OpModeConstants;
+import org.firstinspires.ftc.teamcode.subsystems.conveyor.Conveyor;
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+
+import org.firstinspires.ftc.teamcode.subsystems.intake.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.shooter.ShooterConstants;
 
 public class RobotContainer {
     private final Drive drive;
     private final Shooter shooter;
+    private final Intake intake;
+    private final Conveyor conveyor;
 
-    private final CommandGamepad driverController;
+    private final CommandGamepad driverOneController;
 
     public RobotContainer(HardwareMap hwMap, Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2, OpModeConstants autoNum) {
         drive = new Drive(hwMap, telemetry);
         shooter = new Shooter(hwMap, telemetry);
+        intake = new Intake(hwMap, telemetry);
+        conveyor = new Conveyor(hwMap, telemetry);
 
-        driverController = new CommandGamepad(gamepad1);
+        driverOneController = new CommandGamepad(gamepad1);
 
         if (autoNum == OpModeConstants.TELEOP) {
             setDefaultCommands();
@@ -37,9 +44,9 @@ public class RobotContainer {
     public void setDefaultCommands(){
         drive.setDefaultCommand(
                 Commands.run(() -> drive.drive(
-                        () -> -driverController.getLeftY(),
-                        () -> -driverController.getLeftX(),
-                        () -> -driverController.getRightX()
+                        () -> -driverOneController.getLeftY(),
+                        () -> -driverOneController.getLeftX(),
+                        () -> -driverOneController.getRightX()
                 ), drive)
         );
     }
@@ -48,9 +55,21 @@ public class RobotContainer {
 
         // configure your command bindings to your controller like this
 
-        driverController.a().onTrue(
+        driverOneController.a().onTrue(
                 Commands.sequence(
                         Shooter.setVelocity(shooter, () -> ShooterConstants.longShot).withTimeout(0)
+                )
+        );
+        //onTrue = pressing smt onece   whileTrue = holding
+        driverOneController.leftTrigger().whileTrue(
+                Commands.sequence(
+                         Intake.setPower(intake, () -> 1)
+                )
+        );
+
+        driverOneController.leftBumper().whileTrue(
+                Commands.sequence(
+                        Intake.setPower(intake, () -> -1)
                 )
         );
     }

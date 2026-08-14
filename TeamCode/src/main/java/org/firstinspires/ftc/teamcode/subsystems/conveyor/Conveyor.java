@@ -5,53 +5,36 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.lib.ftclib.hardware.motors.MotorEx;
+
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Conveyor {
-    private final Telemetry telemetry;
-    private final DcMotorEx conveyor;
-    private DoubleSupplier voltage;
-    private boolean atSetpoint = false;
-    private double kSetpoint;
-    private final PIDController veloPID = null;
+public class Conveyor extends SubsystemBase {
 
+    private final MotorEx conveyor;
 
-    public Conveyor(HardwareMap hwMap, Telemetry telemetry) {
-        this.telemetry = telemetry;
-        conveyor = hwMap.get(DcMotorEx.class,"cm1");
+    public Conveyor(HardwareMap hwMap) {
 
-        this.voltage = () -> hwMap.voltageSensor.iterator().next().getVoltage();
+        conveyor = new MotorEx(hwMap, "cm1");
 
-        conveyor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        conveyor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
+
 
     public void setPower(double power) {
-        conveyor.setPower(1);
+        conveyor.set(power);
     }
 
-    public void setTargetVelocity(double ticksPerSecond) {
-        kSetpoint = ticksPerSecond;
+
+    public static Command setPower(Conveyor conveyor, DoubleSupplier power) {
+        return Commands.run(() -> conveyor.setPower(power.getAsDouble()), conveyor);
     }
 
-    public double getVelocity() {
-        return conveyor.getVelocity();
-    }
-
-    public void stop() {
-        conveyor.setPower(0);
-    }
-
-    public void periodic() {
-        if (kSetpoint != 0) {
-            double output = veloPID.calculate(getVelocity(), kSetpoint);
-            // optional voltage compensation:
-            // output *= 12.0 / voltage.getAsDouble();
-            conveyor.setPower(output);
-        }
-        telemetry.addData("Intake Velocity", getVelocity());
+    public static Command setPower(Conveyor conveyor, double power) {
+        return setPower(conveyor, () -> power);
     }
 }

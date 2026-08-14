@@ -28,8 +28,8 @@ public class RobotContainer {
     public RobotContainer(HardwareMap hwMap, Telemetry telemetry, Gamepad gamepad1, Gamepad gamepad2, OpModeConstants autoNum) {
         drive = new Drive(hwMap, telemetry);
         shooter = new Shooter(hwMap, telemetry);
-        intake = new Intake(hwMap, telemetry);
-        conveyor = new Conveyor(hwMap, telemetry);
+        intake = new Intake(hwMap);
+        conveyor = new Conveyor(hwMap);
 
         driverOneController = new CommandGamepad(gamepad1);
 
